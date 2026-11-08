@@ -1,6 +1,6 @@
 # agentic-code-plugin
 
-Az `agentic-code` Claude Code plugin forrása: skillek, a guard hook és a `project-setup` sablonjai. Gyula saját projektjeihez készül, és később nyilvános lehet; GitHub-repó: `Gyulaa/agentic-code-plugin` (most privát).
+Az `agentic-code` Claude Code plugin forrása: skillek, a guard hook és a `project-setup` sablonjai. Gyula saját projektjeihez készül, és később nyilvános lehet; GitHub-repó: `gyulamiklos/agentic-code-plugin` (nyilvános).
 
 Kezdés: `STATE.md` (hol tartunk, egy oldal). A plugin leírása a `README.md`-ben; ez a fájl csak az állandó korlátokat tartja.
 

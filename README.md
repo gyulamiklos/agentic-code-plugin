@@ -67,7 +67,7 @@ Plus a **project guard** hook: if a project has `.claude/guard.json`, every shel
 In Claude Code:
 
 ```
-/plugin marketplace add Gyulaa/agentic-code-plugin
+/plugin marketplace add gyulamiklos/agentic-code-plugin
 /plugin install agentic-code@agentic-code-plugin
 ```
 
