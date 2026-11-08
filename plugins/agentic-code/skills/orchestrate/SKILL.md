@@ -14,7 +14,7 @@ All of these:
 - There are at least two **chunks**. A chunk is a group of related spec tasks, not a single task. It can be committed and tested on its own, it touches files no other chunk touches, and it meets the other chunks only through interfaces the spec fixes.
 - **Or** the change spans several repositories (`git-workflow` §4): one chunk per repository.
 
-It does not pay for one chunk, for chunks that share files or keep changing each other's interfaces, for exploratory work, or for a change of one or two files. Then work alone.
+Each chunk must be real work: more than a couple of small files, since every implementer first reads the project again. A measured example: two chunks of two small files each cost 2.4 times the tokens and took twice as long as working alone, for the same result. It does not pay for one chunk, for chunks that share files or keep changing each other's interfaces, for exploratory work, or for a change of one or two files. Then work alone.
 
 ## 2. Propose, then wait
 Show one table: chunk, repository, files it owns, spec tasks, model. Under it, the cost line ("more tokens than doing it alone, roughly one extra project read per chunk; the gain is time and a clean main context") and anything that blocks a clean split. Start only after the user says yes. That yes covers the local work of this run: creating the chunk worktrees and branches, merging chunk branches into the work branch, and removing them after the merge. It does not cover a push, a pull request or a merge into the default branch. If they want proof first, offer the A/B measurement (`improve-workflow`, "Measure a change", single vs orchestrated).
@@ -32,14 +32,17 @@ Each brief stands alone. The implementer does not see this conversation.
 - The fixed interfaces, verbatim.
 - The acceptance criteria for this chunk.
 - The check command, and the base commit.
-- The absolute worktree path and the branch (§5). Tell it to run git as `git -C <worktree>` and to use absolute paths: a subagent's shell may start in your folder.
+- The absolute worktree path and the branch (§5).
 - What to report (the `implementer` agent defines it).
 
 ## 5. Run
 - Spawn `agentic-code:implementer` per chunk (Sonnet). A project or user agent with the same purpose (`.claude/agents/`) wins over the plugin's.
 - Create every worktree yourself before you spawn, so you know its path and branch, and it starts where you want. Do not use `isolation: "worktree"`: you cannot name its branch in the brief, and its starting point is not yours to choose.
-- **Same repository:** `git worktree add <scratchpad>/<chunk> -b <work-branch>-<chunk> <work-branch>`. It starts from the work branch, so it has the interfaces you committed.
-- **Another repository:** `git -C <repo> fetch` and `git -C <repo> worktree add <scratchpad>/<chunk> -b <feature-branch> origin/<default>`. This chunk branch is that repository's feature branch and becomes its pull request (`git-workflow` §4).
+- Put the worktree **inside the repository**, at `<repo>/.claude/worktrees/<chunk>`, so it stays inside the session's working directories. If `.claude/worktrees/` is not git-ignored, tell the implementers to stage files by name only.
+- **Same repository:** `git worktree add .claude/worktrees/<chunk> -b <work-branch>-<chunk> <work-branch>`. It starts from the work branch, so it has the interfaces you committed.
+- **Another repository:** `git -C <repo> fetch`, then `git -C <repo> worktree add .claude/worktrees/<chunk> -b <feature-branch> origin/<default>`. This chunk branch is that repository's feature branch and becomes its pull request (`git-workflow` §4). If that repository is not a working directory of this session, ask the user to add it (`/add-dir <repo>`) before you start.
+- Before you spawn, tell the user which commands the implementers will run (`git -C <worktree> add` and `commit`, the test command for a worktree), so they can allow them once instead of answering every call. In a headless run, list them in `--allowedTools`.
+- A subagent's shell may return to your folder after every call, and a check script that changes to the git top level then checks your checkout, not the worktree. So give the implementer a test command that names the worktree explicitly where the project allows it. Either way, **your check after each merge is the one that counts**: an implementer whose check was refused reports it, and you run the check after merging.
 - Never the user's own checkout.
 - At most three chunks at a time. Independent chunks run in parallel; a chunk that needs another chunk's result waits for it.
 - While they run, do not edit the files any chunk owns.

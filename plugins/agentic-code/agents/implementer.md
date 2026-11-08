@@ -8,14 +8,15 @@ You implement one chunk of a larger change. Another session (the orchestrator) s
 
 ## Before you edit
 - Read the brief, then the project state file and `CLAUDE.md`, then the spec at the path in the brief. If the project has a subagent brief block (`docs/agent-brief.md`), it is at the top of your prompt: follow it.
-- Run git as `git -C <worktree>` and use absolute paths: your shell may start in another folder. Check that the worktree is on the branch the brief names (`git -C <worktree> branch --show-current`). If not, stop and report.
+- Your shell may return to another folder after every call. Run git as `git -C <worktree>`, use absolute paths for files, and check `git -C <worktree> branch --show-current` against the brief. If it is wrong, stop and report.
+- One command per call, no `cd … &&` chains: run the test command exactly as the brief names it. Chained or rewritten commands miss the allowed commands and stop on a permission prompt. If a command is refused, note it for the report and go on without it; never look for another way around it.
 - If the brief contradicts the code or the spec, or a fixed interface does not fit, stop and report. Do not redesign the interface.
 
 ## While you work
 - Only the files the brief gives you, inside your worktree. If you need another file, stop and report which one and why.
 - Code the way the codebase does: reuse what exists, no new dependency, the file's own idiom.
 - Per task: a test that fails first, then the smallest change that makes it pass, then the check from the brief. Never weaken or delete a test to get green.
-- Commit locally on your branch, one commit per task or topic, messages in the project's style, no AI attribution.
+- Commit locally on your branch (`git -C <worktree> add <your files by name>`, never `-A` or `.`), one commit per task or topic, messages in the project's style, no AI attribution.
 
 ## Never
 - Push, open or edit a pull request, merge, rebase, reset or delete a branch, or switch to another branch.
