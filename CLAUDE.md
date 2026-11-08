@@ -20,7 +20,7 @@ git config core.hooksPath .githooks          # klónonként egyszer
 - Minden fusson a macOS-es bash 3.2-vel és a python3 standard könyvtárával, függőség nélkül.
 
 ## Kiadás
-Új verzió: a `plugins/agentic-code/.claude-plugin/plugin.json` `version` mezője, és egy dátumozott sor a README „What's new” szakaszába (legújabb felül). A guard hook vagy a `check.sh` / githook sablon változásához teszt kell a `tests/` alá.
+Új verzió: a `plugins/agentic-code/.claude-plugin/plugin.json` `version` mezője, és egy dátumozott, egymondatos sor a README „What's new” szakaszába (legújabb felül). A szakasz csak az utolsó hét kiadásait tartja (legalább a legutolsót), a régebbiek törlődnek; a README-ben a telepítés és a használat áll elöl. A guard hook vagy a `check.sh` / githook sablon változásához teszt kell a `tests/` alá.
 
 ## Megszeghetetlen
 - Push és PR csak külön, kifejezett engedéllyel.
