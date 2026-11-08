@@ -30,6 +30,7 @@ Keep a change in one repo. If it truly needs two (typically because the contract
 - two branches, two commits, two PRs, referring to each other;
 - update the contract documentation in the same piece of work;
 - tell the user the two PRs **must be merged together**, otherwise the two sides run different contracts.
+- If each repo's part is a sizeable piece of work, `orchestrate` can run one implementer per repo, with the contract fixed first.
 
 ## 4/b. Shared notes
 A project with shared notes (`notes/config.json`) saves them by its own rules, in this order of preference:

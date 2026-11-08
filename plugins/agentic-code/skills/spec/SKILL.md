@@ -32,6 +32,7 @@ Show the spec to the user. Their edits win.
 - Recommend `/clear` (or a new session) and then: "implement `<spec path>` task by task". A clean context focused on the spec beats a long one full of exploration.
 - Per task: test first, implement, run the check, tick the task in the spec, commit (`quality-gate`, `git-workflow`).
 - If reality contradicts the spec, stop and update the spec with the user before continuing; don't drift silently.
+- If the spec has two or more independent chunks, or spans several repositories, propose `orchestrate` instead (one implementer subagent per chunk). It is a proposal with its cost; the user decides.
 
 ## 5. Review against the spec
-Before calling it done, have a fresh read-only subagent on the main model compare the diff with the spec: every criterion implemented, edge cases tested, nothing outside the scope changed. Tell it to report only gaps that affect correctness or the stated requirements, not style preferences, so the review does not push the change into over-engineering.
+Before calling it done, have a fresh read-only subagent on the main model (`agentic-code:reviewer`) compare the diff with the spec: every criterion implemented, edge cases tested, nothing outside the scope changed. Tell it to report only gaps that affect correctness or the stated requirements, not style preferences, so the review does not push the change into over-engineering.
