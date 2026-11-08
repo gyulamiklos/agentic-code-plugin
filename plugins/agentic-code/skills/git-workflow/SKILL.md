@@ -53,6 +53,7 @@ The local branch is yours, the remote is the team's.
 - **Allowed without asking:** `git fetch --prune`, then from `git branch --merged origin/<default>` one by one `git branch -d` (lowercase `-d`: it refuses to delete unmerged work; never bypass that).
 - **Ask first:** `git branch -D` (only for a provably squash-merged branch; show `git cherry -v origin/<default> <branch>` and the PR number first), and any remote deletion.
 - **Never:** the default branch, the checked-out branch, a branch whose commits exist nowhere else, a branch created in this session, another repo the task did not touch.
+- **Exception:** a chunk branch that `orchestrate` created for this task may be deleted with `git branch -d` once it is merged into the task's feature branch.
 - Report every deletion with its name and repo.
 
 ## 7. Merging and conflicts

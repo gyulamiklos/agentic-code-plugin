@@ -17,9 +17,10 @@ All of these:
 It does not pay for one chunk, for chunks that share files or keep changing each other's interfaces, for exploratory work, or for a change of one or two files. Then work alone.
 
 ## 2. Propose, then wait
-Show one table: chunk, repository, files it owns, spec tasks, model. Under it, the cost line ("more tokens than doing it alone, roughly one extra project read per chunk; the gain is time and a clean main context") and anything that blocks a clean split. Start only after the user says yes. If they want proof first, offer the A/B measurement (`improve-workflow`, "Measure a change", single vs orchestrated).
+Show one table: chunk, repository, files it owns, spec tasks, model. Under it, the cost line ("more tokens than doing it alone, roughly one extra project read per chunk; the gain is time and a clean main context") and anything that blocks a clean split. Start only after the user says yes. That yes covers the local work of this run: creating the chunk worktrees and branches, merging chunk branches into the work branch, and removing them after the merge. It does not cover a push, a pull request or a merge into the default branch. If they want proof first, offer the A/B measurement (`improve-workflow`, "Measure a change", single vs orchestrated).
 
-## 3. Interfaces first
+## 3. Work branch and interfaces first
+- The **work branch** is the task's feature branch (`git-workflow` §1), never the default branch. Create it before anything else.
 - Every interface between chunks (a function signature, a type, an API contract, a file format, a database field) is written in the spec. Or you commit it yourself on the work branch before any chunk starts: the types, a stub, the contract document.
 - Anything outside those interfaces that two chunks would both need is not split. Do it yourself first, or make it one chunk.
 
@@ -31,12 +32,15 @@ Each brief stands alone. The implementer does not see this conversation.
 - The fixed interfaces, verbatim.
 - The acceptance criteria for this chunk.
 - The check command, and the base commit.
-- The worktree path and branch (see below), and what to report (the `implementer` agent defines it).
+- The absolute worktree path and the branch (§5). Tell it to run git as `git -C <worktree>` and to use absolute paths: a subagent's shell may start in your folder.
+- What to report (the `implementer` agent defines it).
 
 ## 5. Run
 - Spawn `agentic-code:implementer` per chunk (Sonnet). A project or user agent with the same purpose (`.claude/agents/`) wins over the plugin's.
-- **Same repository:** spawn with `isolation: "worktree"`.
-- **Another repository:** create the worktree yourself first, `git -C <repo> worktree add <scratchpad>/<chunk> -b <branch> <base>`, and pass that path. Never the user's own checkout.
+- Create every worktree yourself before you spawn, so you know its path and branch, and it starts where you want. Do not use `isolation: "worktree"`: you cannot name its branch in the brief, and its starting point is not yours to choose.
+- **Same repository:** `git worktree add <scratchpad>/<chunk> -b <work-branch>-<chunk> <work-branch>`. It starts from the work branch, so it has the interfaces you committed.
+- **Another repository:** `git -C <repo> fetch` and `git -C <repo> worktree add <scratchpad>/<chunk> -b <feature-branch> origin/<default>`. This chunk branch is that repository's feature branch and becomes its pull request (`git-workflow` §4).
+- Never the user's own checkout.
 - At most three chunks at a time. Independent chunks run in parallel; a chunk that needs another chunk's result waits for it.
 - While they run, do not edit the files any chunk owns.
 
@@ -44,14 +48,15 @@ Each brief stands alone. The implementer does not see this conversation.
 For each finished chunk, in dependency order:
 1. Read the report. Then read the diff, not only the report: `git diff <base>...<branch>`. It must stay inside the chunk's files and meet its criteria.
 2. A change outside the chunk, a criterion not met, or a weakened test: send it back with the exact gap. At most two rounds per chunk. Then take it over yourself, or ask the user (`quality-gate`, stop rule). An implementer that failed twice is not started a third time.
-3. Merge it into the work branch locally and run the check after every merge (`git-workflow` §7). On a conflict, read both sides. If the right answer is not clear, send it back or ask.
+3. **Same repository:** merge it into the work branch locally (`git merge --no-ff <chunk-branch>`) and run the check after every merge (`git-workflow` §7). On a conflict, read both sides. If the right answer is not clear, send it back or ask. **Another repository:** do not merge; that branch is reviewed and goes to its own pull request.
+4. **No report, or an unfinished one:** keep its worktree and branch, tell the user what is there, and do not merge it.
 
 When all chunks are in, run a fresh `agentic-code:reviewer` (main model, read-only) on the whole diff against the spec (`spec` §5). Fix what it finds that affects correctness or the requirements.
 
 ## 7. Close
 - Tick the tasks in the spec.
 - Report one table: chunk, model, tokens and tool calls (from each completion notice), rounds, check, review findings. Add one line on what the split cost or saved, and say whether it was worth it.
-- Remove the worktrees and branches of merged chunks (`git worktree remove`, `git branch -d`). An unmerged one stays until the user says otherwise.
+- Remove the worktrees of finished chunks (`git worktree remove`). Delete a same-repository chunk branch with `git branch -d` only once it is merged into the work branch; `-d` refuses otherwise, never bypass it. A branch in another repository stays: it is that repository's pull request. An unmerged chunk stays until the user says otherwise.
 - Push and pull request as usual: only with the user's permission, asked separately (`git-workflow`). Several repositories: the PRs refer to each other and are merged together.
 
 ## Never
