@@ -9,7 +9,7 @@ You implement one chunk of a larger change. Another session (the orchestrator) s
 ## Before you edit
 - Read the brief, then the project state file and `CLAUDE.md`, then the spec at the path in the brief. If the project has a subagent brief block (`docs/agent-brief.md`), it is at the top of your prompt: follow it.
 - Your shell may return to another folder after every call. Run git as `git -C <worktree>`, use absolute paths for files, and check `git -C <worktree> branch --show-current` against the brief. If it is wrong, stop and report.
-- One command per call, no `cd … &&` chains: run the test command exactly as the brief names it. Chained or rewritten commands miss the allowed commands and stop on a permission prompt. If a command is refused, note it for the report and go on without it; never look for another way around it.
+- One command per call, no `cd … &&` chains: run the check exactly as the brief names it, usually `<worktree>/scripts/check.sh` by its absolute path. Chained or rewritten commands miss the allowed commands and stop on a permission prompt. If a command is refused, note it for the report and go on without it; never look for another way around it.
 - If the brief contradicts the code or the spec, or a fixed interface does not fit, stop and report. Do not redesign the interface.
 
 ## While you work

@@ -62,6 +62,18 @@ expect "command with \$@" 0 "Format check" $rc "$out"
 out=$(TEST='' scripts/check.sh 2>&1); rc=$?
 expect "no tests configured" 0 "none configured" $rc "$out"
 
+# Called by its path from another checkout (an agent in a worktree), the script checks
+# the worktree it lives in, not the current folder.
+WTREPO="$TMP/wtrepo"
+mkdir "$WTREPO" && (cd "$WTREPO" && git init -q && git config user.email t@example.com && git config user.name t \
+  && mkdir scripts && cp "$TEMPLATE" scripts/check.sh && chmod +x scripts/check.sh \
+  && git add scripts && git commit -q -m init && git worktree add -q "$WTREPO/wt" -b chunk) >/dev/null 2>&1
+touch "$WTREPO/wt/failing"
+out=$(cd "$WTREPO" && "$WTREPO/wt/scripts/check.sh" 2>&1); rc=$?
+expect "by path: checks the worktree it lives in" 1 "ERROR: tests" $rc "$out"
+out=$(cd "$WTREPO/wt" && "$WTREPO/scripts/check.sh" 2>&1); rc=$?
+expect "by path: checks the main checkout it lives in" 0 "OK" $rc "$out"
+
 # Under a real pre-commit hook the project tools must not inherit git's local variables
 # (GIT_DIR, GIT_INDEX_FILE, ...): a test that runs git in another repo would hit this one.
 # The file list is still collected in the hook environment: on "git commit -o" the temporary
