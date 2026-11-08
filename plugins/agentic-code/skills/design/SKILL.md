@@ -19,7 +19,7 @@ Files next to this SKILL.md, read when the step needs them:
 
 ## 1. Context first
 - Read `DESIGN.md` at the project root and the theme or token files it names. It wins over this skill's defaults; the user's brief wins over both.
-- **No `DESIGN.md` and a new direction or a redesign:** ask in one round (the question tool if available): who uses it, on what device and how often; the one action it must lead to; the voice (`references/copy.md`, Voice) and, in languages that have it, the form of address; what exists (brand colours, logo, fonts, sites or apps they like and dislike, real photos); what is off limits. Then write `DESIGN.md` from `templates/DESIGN.md` and show it.
+- **No `DESIGN.md` and a new direction or a redesign:** ask in one round (the question tool if available): who uses it, on what device and how often; the one action it must lead to; the voice (`references/copy.md`, Voice) and, in languages that have it, the form of address; what exists (brand colours, logo, fonts, sites or apps they like and dislike, real photos); what is off limits. Ask them to attach what they have as images: a mockup or sketch, screenshots of the current UI or of references, the logo. Read them before the plan, and say in the plan what you took from each. Then write `DESIGN.md` from `templates/DESIGN.md` and show it.
 - **An existing UI without `DESIGN.md`:** derive the file from the code (theme, tokens, components) instead of inventing a new system, and ask before changing direction.
 - **A small change inside an existing UI:** don't force a `DESIGN.md`; follow what is there.
 
