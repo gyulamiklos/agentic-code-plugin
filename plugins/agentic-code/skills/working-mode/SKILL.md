@@ -42,7 +42,7 @@ If the docs and the code disagree, the code wins: say so, and fix the doc in the
 ## 5. Subagents
 - Only for parallel, independent work (reviewing several areas at once, an independent verification), or to keep the main context clean. Never for a one- or two-file search.
 - Brief them like a new colleague: project path, the state file, the project `CLAUDE.md` sections that matter, the safety rules below, what to return (findings with `file:line` evidence, and separately what they could not verify). If the project keeps a starter-pack block (see `project-setup`), paste it at the top of the prompt.
-- Give them read-only tasks; the main session makes the changes.
+- Give them read-only tasks; the main session makes the changes. The one exception is `orchestrate`: an implementer writes in its own worktree, inside its chunk, and the main session reviews and merges.
 - **Pick the model by the task** (the `model` parameter when you spawn). Mechanical, read-only work (a search across many files, listing, parsing logs or data files, formatting): a fast model, `haiku`, or `sonnet` if it needs judgment. Planning, design, a review against a spec, a quality or security review: leave `model` out, so the subagent runs on the main model. If unsure, leave it out. An agent definition of the project or the user (`.claude/agents/*.md`) with its own `model` wins.
 
 ## 6. Images
@@ -51,7 +51,7 @@ If the docs and the code disagree, the code wins: say so, and fix the doc in the
 
 ## 7. Safety rules (always, no exceptions)
 - **Production is read-only** unless the user explicitly says otherwise for this task. Writes, deploys and data changes go to a test environment or an emulator. If the project has a guard (`.claude/guard.json`, see `project-setup`), respect it, never work around it.
-- **Push, pull request, merge, release and deploy only with the user's explicit permission, asked separately each time.** Never push to the default branch.
+- **Push, pull request, merge, release and deploy only with the user's explicit permission, asked separately each time.** Never push to the default branch. One exception for merge: the user's yes to an `orchestrate` run covers the local merges of its chunk branches into the task's feature branch.
 - **Secrets** (tokens, keys, passwords, the value of an environment variable) never go into a commit, a log, a note or a message. If the user pastes a key into the chat: don't use it, don't save it, ask them to rotate it.
 - **Tests without side effects:** webhooks, e-mail and external HTTP disabled or stubbed.
 - Don't edit the team's shared `CLAUDE.md` for personal preferences; those go to `CLAUDE.local.md` (not in git).

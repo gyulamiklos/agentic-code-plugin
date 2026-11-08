@@ -1,6 +1,6 @@
 # agentic-code-plugin
 
-Az `agentic-code` Claude Code plugin forrása: skillek, a guard hook és a `project-setup` sablonjai. Gyula saját projektjeihez készül, és később nyilvános lehet; GitHub-repó: `Gyulaa/agentic-code-plugin` (most privát).
+Az `agentic-code` Claude Code plugin forrása: skillek, a guard hook és a `project-setup` sablonjai. Gyula saját projektjeihez készül, és később nyilvános lehet; GitHub-repó: `gyulamiklos/agentic-code-plugin` (nyilvános).
 
 Kezdés: `STATE.md` (hol tartunk, egy oldal). A plugin leírása a `README.md`-ben; ez a fájl csak az állandó korlátokat tartja.
 
@@ -20,7 +20,7 @@ git config core.hooksPath .githooks          # klónonként egyszer
 - Minden fusson a macOS-es bash 3.2-vel és a python3 standard könyvtárával, függőség nélkül.
 
 ## Kiadás
-Új verzió: a `plugins/agentic-code/.claude-plugin/plugin.json` `version` mezője, és egy dátumozott sor a README „What's new” szakaszába (legújabb felül). A guard hook vagy a `check.sh` / githook sablon változásához teszt kell a `tests/` alá.
+Új verzió: a `plugins/agentic-code/.claude-plugin/plugin.json` `version` mezője, és egy dátumozott, egymondatos sor a README „What's new” szakaszába (legújabb felül). A szakasz csak az utolsó hét kiadásait tartja (legalább a legutolsót), a régebbiek törlődnek; a README-ben a telepítés és a használat áll elöl. A guard hook vagy a `check.sh` / githook sablon változásához teszt kell a `tests/` alá.
 
 ## Megszeghetetlen
 - Push és PR csak külön, kifejezett engedéllyel.

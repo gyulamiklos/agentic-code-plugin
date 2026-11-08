@@ -2,6 +2,21 @@
 
 Tartós döntésenként egy bejegyzés, legújabb felül. Ha egy döntés változik, a helyén javítjuk (a változás dátumával), nem duplikáljuk.
 
+## 2026-11-08 · Orkesztrált megvalósítás: munkadarabonként egy al-ügynök, csak javaslatra (0.7.0)
+- **Döntés:** Új `orchestrate` skill. A fő munkamenet vezényel; két vagy több független munkadarabnál (nem feladatonként) vagy több repónál egy-egy `implementer` al-ügynök (Sonnet) dolgozik a saját worktree-jében, helyben commitol, push és merge nélkül; a felületek előre rögzítettek; a vezénylő minden diffet elolvas, merge után checket futtat, a végén egy friss `reviewer` (fő modell, csak olvas) a spechez méri. Csak javasol, a felhasználó dönt; legfeljebb 3 darab egyszerre, darabonként legfeljebb 2 javítási kör. A két ügynök a pluginnal jön (`plugins/agentic-code/agents/`). Az A/B mérés az `improve-workflow` része: két fej nélküli `claude -p` futás két homokozó-klónban, a költség a `total_cost_usd`-ből és a `modelUsage`-ből (al-ügynökökkel együtt; a `usage` csak a fő szál, próbával ellenőrizve).
+- **Miért:** Nagy, szétválasztható munkánál a falióra-idő és a tiszta fő kontextus nyer; a több ügynök több tokenbe kerül, ezért a „megéri” szabály és a mérés a skill része. Al-ügynök nem indíthat al-ügynököt, ezért az A/B fej nélküli futásokkal megy.
+- **Érinti:** `orchestrate` (új), `agents/implementer.md`, `agents/reviewer.md` (új), `spec`, `quality-gate`, `git-workflow`, `working-mode`, `improve-workflow`, README, `plugin.json`. Spec: `docs/specs/2026-11-08-orchestrate-0.7.md`.
+- **Első A/B mérés (2026-11-08, n=1, szándékosan kicsi minta-spec: 2 darab × 2 kis fájl, Opus medium vezénylő, Sonnet munkások, fej nélkül):**
+
+| Futás | Oldal | Költség (USD) | Idő | Körök | Check | Saját elfogadási teszt (31) |
+|---|---|---|---|---|---|---|
+| A | egyedül | 0,51 | 59 s | 13 | OK | 31/31 |
+| B1 | orkesztrált (első skill-változat) | 1,23 | 125 s | 17 | OK | 31/31 |
+| B2 | orkesztrált (javított worktree-hely) | 0,93 | 98 s | 15 | OK | 31/31 |
+| B3 | orkesztrált (`check.sh` útvonalról hívható, engedély a worktree-checkre) | 1,06 | 132 s | 15 | OK, a munkások is futtatták | 31/31 |
+
+  Ilyen méretnél az orkesztrálás 1,8–2,4× költség és 1,7–2,1× idő, azonos eredménnyel: a „megéri” szabály jogos, a skill a darabonkénti méretet most kimondja. Tanulság: a munkás shellje minden hívás után visszaáll a vezénylő mappájába; a `cd … &&` lánc és az abszolút útvonalas `check.sh` az engedélylistán elakad; a `.git/info/exclude` védett. Ezért a worktree a repón belül (`.claude/worktrees/`), a munkás `git -C`-t használ és név szerint ad hozzá, a mérvadó check a vezénylő merge utáni checkje. A `check.sh` sablon azt a checkoutot ellenőrzi, amelyikben a szkript van (git hook alatt a régi módon), így a munkás `<worktree>/scripts/check.sh`-val a saját worktree-jét nézi; a B3-ban mindkét munkás tesztet írt előbb és maga commitolt. Egy valódi, nagyobb specen még mérni kell (ahol a darabok egyenként több fájlosak).
+
 ## 2026-11-08 · Modell a feladathoz, képes bemenet, eldobható szkriptek; négy javaslat elutasítva (0.6.1)
 - **Döntés:** Az al-ügynök gépies, csak olvasó munkára gyors modellt kap, tervezésre és átnézésre a fő modellt (`working-mode` §5, hivatkozva a `spec`-ben és a `quality-gate`-ben). A `spec` és a `design` képet kér (mockup, vázlat, képernyőkép, ábra), ha van; a spec szövegesen rögzíti, mit dönt el a kép. Egyszeri adatkérdésre eldobható szkript a scratchpadba (`working-mode` §3), nem külön skill. Elutasítva: a skillek ASD-STE100 szerinti átírása (nincs bizonyíték a haszonra, a „miért” sorok elvesznének), a „zero-terminal” mód (a guard hook csak a Claude saját parancsait látja; a felhasználó kézi munkáját nem fékezzük), az automatikus törlés. Elhalasztva: az „LLM wiki” (ingest és lint) a 0.6.0 mérése utánig.
 - **Miért:** A modellválasztás az Agent tool `model` paraméterével valódi, olcsó nyereség; egy saját konfigurációs fájlt a Claude Code nem olvasna. A kép tömörebb, mint a leírása, de a friss munkamenetnek szöveg kell. A többi javaslat feltevése nem állt meg a kóddal vagy a meglévő döntésekkel szemben.

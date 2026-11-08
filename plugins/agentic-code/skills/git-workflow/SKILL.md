@@ -30,6 +30,7 @@ Keep a change in one repo. If it truly needs two (typically because the contract
 - two branches, two commits, two PRs, referring to each other;
 - update the contract documentation in the same piece of work;
 - tell the user the two PRs **must be merged together**, otherwise the two sides run different contracts.
+- If each repo's part is a sizeable piece of work, `orchestrate` can run one implementer per repo, with the contract fixed first.
 
 ## 4/b. Shared notes
 A project with shared notes (`notes/config.json`) saves them by its own rules, in this order of preference:
@@ -52,6 +53,7 @@ The local branch is yours, the remote is the team's.
 - **Allowed without asking:** `git fetch --prune`, then from `git branch --merged origin/<default>` one by one `git branch -d` (lowercase `-d`: it refuses to delete unmerged work; never bypass that).
 - **Ask first:** `git branch -D` (only for a provably squash-merged branch; show `git cherry -v origin/<default> <branch>` and the PR number first), and any remote deletion.
 - **Never:** the default branch, the checked-out branch, a branch whose commits exist nowhere else, a branch created in this session, another repo the task did not touch.
+- **Exception:** a chunk branch that `orchestrate` created for this task may be deleted with `git branch -d` once it is merged into the task's feature branch.
 - Report every deletion with its name and repo.
 
 ## 7. Merging and conflicts

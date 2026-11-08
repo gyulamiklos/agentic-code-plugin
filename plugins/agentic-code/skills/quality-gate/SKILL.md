@@ -26,7 +26,7 @@ Quality comes first, at the level of a precise professional team: we don't skimp
    - duplication, dead code, unused imports, leftover debug output;
    - missing error state, unawaited async work, using a context or component after it is gone;
    - user-facing text in the right language; accessibility (labels, touch target size).
-7. **Independent review** for large or risky changes (several files, money, time, permissions, data writes): a read-only subagent on the main model with a fresh context that sees the diff and the criteria (or the spec), not your reasoning (`working-mode` §5). Ask it for gaps that affect correctness or the requirements only; treat style findings as optional, so the review does not push the change into over-engineering.
+7. **Independent review** for large or risky changes (several files, money, time, permissions, data writes): a read-only subagent on the main model (`agentic-code:reviewer`) with a fresh context that sees the diff and the criteria (or the spec), not your reasoning (`working-mode` §5). Ask it for gaps that affect correctness or the requirements only; treat style findings as optional, so the review does not push the change into over-engineering.
 8. **Commit per topic** (`git-workflow`): each commit builds and passes on its own; if it depends on another file's change, that change belongs in it too.
 9. **Record:** a lasting decision → the project's decision log; a new bug you found but did not fix → the bug list, with where it came from if known.
 

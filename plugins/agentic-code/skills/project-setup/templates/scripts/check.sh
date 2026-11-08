@@ -8,7 +8,15 @@
 # Limitation: --staged checks the working-tree version of the staged files, so a partially
 # staged file is checked as it is on disk.
 set -u
-cd "$(git rev-parse --show-toplevel)" || exit 1
+# Check the repository (or worktree) this script lives in, whatever the current folder:
+# an agent may call <worktree>/scripts/check.sh from another checkout. Under a git hook,
+# GIT_DIR is set and may be relative to the current folder, so stay there.
+if [ -n "${GIT_DIR:-}" ]; then
+  top=$(git rev-parse --show-toplevel)
+else
+  top=$(cd "$(dirname "$0")" && git rev-parse --show-toplevel)
+fi
+cd "$top" || exit 1
 
 # --- configuration (set by project-setup; an empty value skips the step; the environment can override) ---
 EXTS=${EXTS-"{{EXTS}}"}                         # file extensions to format, space separated

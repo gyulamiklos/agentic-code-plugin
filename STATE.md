@@ -1,27 +1,26 @@
 # Állapot
 
-Frissítve: 2026-10-28. Egy oldal maradjon: a `/agentic-code:save-work` írja át, a `/agentic-code:resume-work` olvassa először.
+Frissítve: 2026-11-08. Egy oldal maradjon: a `/agentic-code:save-work` írja át, a `/agentic-code:resume-work` olvassa először.
 
 ## Mi ez
-Az `agentic-code` Claude Code plugin forrása (skillek, guard hook, `project-setup` sablonok).
+Az `agentic-code` Claude Code plugin forrása (skillek, ügynökök, guard hook, `project-setup` sablonok).
 
 ## Most
-- **0.6.0 megvalósítva, a `main` beolvasztva az ágba, PR a `main`-re** (ág `feat/team-notes`); `scripts/check.sh` → `OK`. Spec: `docs/specs/2026-10-28-team-notes-0.6.md`; a döntés és a 8 eltérés a `docs/decisions.md` legfelső bejegyzésében.
-- **#7 beolvasztva** (2026-10-28, 0.5.1: a PR alapja az alapértelmezett ág). A `main` 0.5.1-en áll; az eszközökön a 0.5.1 már frissíthető.
-- Új fájlok: `plugins/agentic-code/skills/project-setup/templates/scripts/notes.py` és `notes_team.py`, `templates/notes/` (config, CLAUDE, STATE, README, gitignore/gitattributes/local-names), `templates/githooks/pre-commit-notes`, a `pre-commit` bővítve; `skills/tidy-notes/`; módosítva: `project-setup` (SKILL, `references/interview.md`, `audit.md`, `agent-brief.md`), `save-work`, `resume-work`, `git-workflow`, `working-mode`, README, `plugin.json` 0.6.0; tesztek: `tests/test_notes.py`, `test_notes_team.py`, `test_notes_e2e.py`, `test_check.sh` bővítve. A `templates/notes-L.md` törölve.
-- A kutatás helyben: `research/notes-system-comparison.md` (egy külső, érett csapatrendszer elemzése; a repóba nem kerülhet).
+- **0.6.1 beolvasztva** (#9): modell a feladathoz, képes bemenet a `spec`-ben és a `design`-ban, eldobható szkriptek.
+- **0.7.0 beolvasztva** (#10): `orchestrate` skill, `agents/implementer.md` (Sonnet) és `reviewer.md` (fő modell), A/B „single vs orchestrated” az `improve-workflow`-ban. Spec: `docs/specs/2026-11-08-orchestrate-0.7.md`; friss al-ügynökös átnézés megvolt (8 találat, javítva); első A/B mérés a `docs/decisions.md` legfelső bejegyzésében.
+- README átrendezve: telepítés és használat elöl, „What's new” csak az utolsó hét, rövid sorokkal (szabály a `CLAUDE.md` Kiadás részében). A repó nyilvános, `gyulamiklos/agentic-code-plugin`.
+- Elutasítva vagy elhalasztva (2026-11-08): ASD-STE100 átírás, „zero-terminal” mód, külön `ephemeral-run` skill; az „LLM wiki” a 0.6.0 mérése utánig.
 
 ## Blokkol / várunk rá
-- Gyula: a 0.6.0 PR beolvasztása; utána az eszközökön `/plugin marketplace update agentic-code-plugin`, és ellenőrizni, hová került (`plugin.json` a `main`-en).
-- Nincs lefuttatva: (1) a spec „friss, csak olvasó al-ügynökkel átnézés” lépése (nem indítottam al-ügynököt); (2) a kézi próba: `claude --plugin-dir ./plugins/agentic-code` egy mintaprojekten, `project-setup new` L2-ként, `resume-work`, `save-work`, második klón, `tidy-notes`. A `claude plugin validate` zöld.
+- Gyula: az eszközökön `/plugin marketplace update agentic-code-plugin`.
 
 ## Következő lépés
-1. A PR beolvasztása után a `main` ellenőrzése, a frissítés az eszközökön.
-2. Az al-ügynökös átnézés a spec ellen (csak olvasó, friss; csak a helyességet vagy a követelményeket érintő hiányok), a kézi próba, a találatok javítása.
-3. A 0.6.0 kipróbálása egy valódi többfős projekten; `notes.py health --save` kiindulás, négy hét múlva összevetés és a tokenmérés (`improve-workflow` „Measure a change”). Az üzenet-modul egyszerűsítendő vagy elhagyandó, ha 6 hét után a szálak nem záródnak.
-4. Régebbi nyitott tételek: a 0.5.0 küszöbeinek mérése (50 és 300 sor, 2 terület, 5 tétel, 14 nap); a TDAD és az ImpossibleBench elsődleges forrásait el kell olvasni, mielőtt a README idézi őket.
+1. Az `orchestrate` mérése egy valódi, nagyobb specen (darabonként több fájl), interaktív módban. A meglévő projektek `scripts/check.sh`-ja a régi sablonból van: a `project-setup existing` frissítse (a worktree-ből útvonallal hívva különben a vezénylő checkoutját nézi).
+2. A `motion-workshop` oldalán: a `dev-recap` olvassa a „What's new” sorokat és a `notes/` döntéseit; a `motion-film` a `DESIGN.md`-t, ha nincs márkacsomag (ott készül, nem itt).
+3. A 0.6.0 kipróbálása egy valódi többfős projekten; `notes.py health --save` kiindulás, négy hét múlva összevetés.
+4. Régebbi nyitott tételek: a 0.5.0 küszöbeinek mérése; a TDAD és az ImpossibleBench elsődleges forrásai.
 
 ## Súrlódás
-- A `scripts/check.sh` kb. 35 s (a notes-tesztek ~13 s-ot adtak a korábbi ~17 s-hoz, valódi git-repókkal), minden commitnál lefut. Ha zavaró lesz: a lassú tesztek külön címkére.
-- A hook alatt a `git commit` exportálja a `GIT_AUTHOR_NAME`-et és társait: az ideiglenes git-repós tesztek ettől hibáztak (a commit szerzője felülíródott); a notes-tesztek importkor törlik a `GIT_*` változókat. Új ilyen teszt ugyanígy tegye.
-- Egymásra épülő PR: a #5 a fix ágba olvadt, a `main`-ből kimaradt a 0.5.0 (egy extra PR, a #6 a javítás). A szabály a #7-ben vár.
+- A `scripts/check.sh` kb. 35 s, minden commitnál lefut. Ha zavaró lesz: a lassú tesztek külön címkére.
+- A hook alatt a `git commit` exportálja a `GIT_*` változókat; az ideiglenes git-repós tesztek importkor törlik őket. Új ilyen teszt ugyanígy tegye.
+- Fej nélküli A/B futás: a `bypassPermissions` mód a helyi auto módban tiltott; `acceptEdits` + `--allowedTools` működik. Az al-ügynök shellje minden hívás után visszaáll; a láncolt parancsok elakadnak.

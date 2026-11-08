@@ -55,4 +55,9 @@ Use it when a change claims to save tokens or rounds (a script, a hook, a strict
 | Run | Side | Tokens | Tool calls | Criterion met |
 |---|---|---|---|---|
 
+**Single vs orchestrated.** To test whether `orchestrate` pays on a spec, both sides run the same spec from the same commit, each in its own sandbox clone. Run them as headless sessions, not as subagents, because a subagent cannot start further subagents: `claude -p "<prompt>" --model <same model> --effort <same effort> --output-format json --plugin-dir <plugin>` from the clone. Side A gets "implement `<spec>` task by task, alone"; side B gets "implement `<spec>` with `/agentic-code:orchestrate`, the split is approved". A headless session cannot ask for permissions: agree with the user beforehand which tools it may use (`--allowedTools`, the same list on both sides, including the commands the implementers run), and never point it at a live environment. Take tokens and cost from the JSON's `total_cost_usd` and `modelUsage` (per model, subagents included), not from `usage` (the main thread only). Also record `duration_ms`, `num_turns`, the check result in each clone, the spec criteria met, and the findings of one `agentic-code:reviewer` run on each diff. This replaces "Set up" and the source of the figures above; every other rule in this section applies (the cost and the user's yes first, n=2 under 10%, percentages only from your own table, no saving if accuracy dropped).
+
+| Run | Side | Cost (USD) | Tokens by model | Time | Turns | Check | Criteria met | Review findings |
+|---|---|---|---|---|---|---|---|---|
+
 **Quote a saving as a percentage only from your own table,** never from a source's headline number or a feeling. If accuracy dropped, the saving does not count.
