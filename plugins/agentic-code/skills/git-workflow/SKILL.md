@@ -19,6 +19,7 @@ The project's own `CLAUDE.md` wins where it is stricter or different (branch nam
 - If there is no `gh`, write the title and the body; the user pastes them.
 
 ## 3. Commits
+- **The wording** of commit messages, PR titles and bodies, code comments and READMEs follows the `commit-writing` skill; load it before writing them.
 - Conventional prefix (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `style:`), imperative, lowercase after the prefix, no trailing period, at most 72 characters. The body says **why**, not what; skip it when the subject says everything.
 - Each commit builds and passes on its own. If the pre-commit hook fails, fix the cause; never `--no-verify`.
 - **Before every commit, look at `git diff --cached --stat`:** a submodule pointer, a lock file or a generated file must not ride along in an unrelated commit. A lock file changed by a local SDK or toolchain is not committed unless the dependency change is intended.

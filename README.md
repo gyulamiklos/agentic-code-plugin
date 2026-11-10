@@ -38,6 +38,7 @@ While developing the plugin itself, try a change without installing: `claude --p
 | `working-mode` | automatically | Context order (state file → `CLAUDE.md` → targeted search), token hygiene, subagent briefing, safety rules |
 | `quality-gate` | automatically, before code changes | Acceptance criteria, test first, one-command check, diff self-review, definition of done, stop rule; the test level scales with how big and how dangerous the change is, and a missing test is written down as test debt |
 | `git-workflow` | automatically, before branch/commit/PR | One change per repo and branch, commit style, permission for push and PR, cross-repo changes, branch cleanup |
+| `commit-writing` | automatically, when writing a commit, PR, code comment or README | Text a later agent can act on: exact values, root cause, what callers must change; a PR body under Problem, Change, Compatibility, Testing; comments say why; the project's own conventions win |
 | `match-the-codebase` | automatically, when writing code | Reuse before adding, no new dependency without asking, the file's idiom, what we never ship |
 | `spec` | automatically for non-trivial changes, or `/agentic-code:spec <feature>` | Explore read-only, interview you about the hard parts, write a self-contained spec with tasks and an end-to-end check, implement it in a fresh session, review against it |
 | `orchestrate` | proposed by `spec` for large or multi-repo work, or `/agentic-code:orchestrate <spec>` | Splits a spec into a few independent chunks (or one per repo), fixes the interfaces first, lets one `implementer` subagent on Sonnet build each chunk in its own git worktree, then reviews, merges and checks; starts only after you agree |
@@ -104,6 +105,11 @@ claude plugin validate . && claude plugin validate plugins/agentic-code
 ```
 
 Everything works with the bash 3.2 and python3 that ship with macOS, and on Linux.
+
+## Credits
+
+- The `commit-writing` skill is by [Kadosa](https://github.com/kadosabutor), included with permission.
+- Much of how this plugin works (the one-page state file, the decision and bug logs, the quality gate, the git discipline) grew out of a shared project vault that Kadosa helped build.
 
 ## Licence
 
