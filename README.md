@@ -74,6 +74,7 @@ Plus a **project guard** hook: if a project has `.claude/guard.json`, every shel
 
 ## What's new
 
+- **0.7.1 (2026-11-10):** `commit-writing`: commit messages, PR bodies, code comments and READMEs a later agent can act on (exact values, root cause, what callers must change). By Kadosa, see Credits. `git-workflow` loads it before writing any of these.
 - **0.7.0 (2026-11-08):** `orchestrate`: for a large or multi-repo spec, one Sonnet implementer per chunk in its own worktree; the main session reviews, merges and checks. Only on your yes. `improve-workflow` can measure it against working alone.
 - **0.6.1 (2026-11-08):** subagents get a model that fits the task; `spec` and `design` ask for mockups and diagrams; one-off data questions use a throwaway script.
 
